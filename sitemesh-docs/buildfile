@@ -1,0 +1,13 @@
+load "../build-common.rb"
+require "buildr/jetty"
+require "readline"
+
+define "sitemesh-docs" do
+  package(:war, :file=>path_to("target/sitemesh-docs.war")).with(:libs=>SITEMESH)
+
+  task("run" => [package(:war), jetty.use]) do |task|
+    jetty.deploy("http://localhost:8080", task.prerequisites.first)
+    Readline::readline("Hit [enter] to stop")
+  end
+
+end

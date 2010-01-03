@@ -1,0 +1,16 @@
+load "../build-common.rb"
+
+repositories.remote << "http://www.ibiblio.org/maven2"
+
+ANT = transitive(["org.apache.ant:ant:jar:1.7.1", "org.apache.ant:ant-testutil:jar:1.7.1"])
+JAPEX = ["com.sun.japex:japex:jar:1.0.25", "jfree:jfreechart:jar:1.0.13", "jfree:jcommon:jar:1.0.15"]
+
+define "sitemesh-tools-benchmark" do
+  compile.with(SITEMESH, JAPEX)
+
+  task :run => :compile do
+    Java::Commands.java("com.sun.japex.Japex", ("src/main/config/contentprocessor.xml"), :classpath=>[JAPEX, ANT])
+  end
+
+end
+

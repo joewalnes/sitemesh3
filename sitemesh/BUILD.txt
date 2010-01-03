@@ -1,0 +1,21 @@
+To build SiteMesh, you need JDK 1.6 and Buildr.
+See http://buildr.apache.org/
+
+Common build tasks:
+
+* buildr package
+  Build complete SiteMesh distribution
+
+* buildr package test=no
+  As above, but skip tests
+
+* buildr eclipse
+* buildr idea
+  Create IDE project files
+ 
+* buildr install
+  Install package into local repository
+
+* buildr upload
+  Upload to SiteMesh repository
+

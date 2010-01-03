@@ -1,0 +1,29 @@
+load "../build-common.rb"
+
+# Dependencies
+SERVLET_API = "javax.servlet:servlet-api:jar:2.5"
+ANT = transitive(["org.apache.ant:ant:jar:1.7.1", "org.apache.ant:ant-testutil:jar:1.7.1"])
+JUNIT = "junit:junit:jar:4.7"
+JETTY = transitive("org.mortbay.jetty:jetty:jar:6.1.22")
+JFLEX = "de.jflex:jflex:jar:1.4.3"
+
+define "sitemesh" do
+
+  project.version = SITEMESH_VERSION
+  project.group = "org.sitemesh"
+
+  # Code generation step, using JFlex. Putting in target/generated-source will have it picked up automatically by Buildr.
+  generate_lexer = file(path_to("target/generated-source/org/sitemesh/tagprocessor/Lexer.java") => file(path_to("src/main/java/org/sitemesh/tagprocessor/lexer.flex"))) do |file|
+    dir = path_to("target/generated-source/org/sitemesh/tagprocessor")
+    Java::Commands.java("JFlex.Main", "-q", "-d", dir, path_to('src/main/java/org/sitemesh/tagprocessor/lexer.flex'), :classpath=>JFLEX)
+  end
+  
+  compile.from(generate_lexer).with(SERVLET_API, ANT)
+  test.with(JUNIT, JETTY)
+
+  package(:jar)
+  package(:sources).include(path_to("target/generated-source"))
+  package(:javadoc).include(path_to("target/generated-source"))
+
+end
+
